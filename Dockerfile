@@ -40,8 +40,7 @@ RUN chmod -R 755 $ANDROID_HOME
 
 RUN apt-get install -y unzip
 ADD https://services.gradle.org/distributions/gradle-0.9-bin.zip /opt/
-RUN unzip /opt/gradle-0.9-bin.zip
-RUN ls -al /opt
+RUN unzip /opt/gradle-0.9-bin.zip -d /opt
 ENV GRADLE_HOME /opt/gradle-0.9
 ENV PATH $GRADLE_HOME/bin:$PATH
 
