@@ -38,8 +38,12 @@ RUN echo $PATH
 RUN echo "y" | android update sdk -u --filter platform-tools,android-19,build-tools-19.0.3
 RUN chmod -R 755 $ANDROID_HOME
 
+RUN apt-get install -y unzip
 ADD https://services.gradle.org/distributions/gradle-0.9-bin.zip /opt/
-RUN echo ls -al /opt
+RUN unzip /opt/gradle-0.9-bin.zip
+RUN ls -al /opt
+ENV GRADLE_HOME /opt/gradle-0.9
+ENV PATH $GRADLE_HOME/bin:$PATH
 
 # Fake a fuse install (to prevent ia32-libs-multiarch package from producing errors)
 RUN apt-get install libfuse2
