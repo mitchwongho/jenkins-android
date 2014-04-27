@@ -37,7 +37,20 @@ ENV PATH $ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
 RUN echo $PATH
 RUN echo "y" | android update sdk -u --filter platform-tools,android-19,build-tools-19.0.3
 RUN chmod -R 755 $ANDROID_HOME
-RUN apt-get install -y ia32-libs
+
+ADD https://services.gradle.org/distributions/gradle-0.9-bin.zip /opt/
+RUN echo ls -al /opt
+
+# Fake a fuse install (to prevent ia32-libs-multiarch package from producing errors)
+RUN apt-get install libfuse2
+RUN cd /tmp ; apt-get download fuse
+RUN cd /tmp ; dpkg-deb -x fuse_* .
+RUN cd /tmp ; dpkg-deb -e fuse_*
+RUN cd /tmp ; rm fuse_*.deb
+RUN cd /tmp ; echo -en '#!/bin/bash\nexit 0\n' > DEBIAN/postinst
+RUN cd /tmp ; dpkg-deb -b . /fuse.deb
+RUN cd /tmp ; dpkg -i /fuse.deb
+RUN apt-get install -y ia32-libs-multiarch
 
 # Add git
 RUN apt-get install -y git-core
